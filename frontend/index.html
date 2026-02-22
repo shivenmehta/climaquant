@@ -560,7 +560,7 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
 // ═══════════════════════════════════════════════════════════════
 // API LAYER
 // ═══════════════════════════════════════════════════════════════
-const API = 'http://localhost:8000';
+const API = 'https://climaquant.onrender.com';
 
 async function _post(path, body) {
   const res = await fetch(API + path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
