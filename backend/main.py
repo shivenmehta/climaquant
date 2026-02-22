@@ -62,8 +62,9 @@ def _precompute():
 
 @app.on_event("startup")
 async def startup():
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, _precompute)
+    print("ClimaQuant API ready — computing on demand.")
+    global _ready
+    _ready = True
 
 
 class VanillaRequest(BaseModel):
