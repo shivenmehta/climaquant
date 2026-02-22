@@ -347,32 +347,28 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
       <!-- Legend / Key -->
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 24px;margin:16px 0 22px;padding:18px 20px;background:var(--bg3);border-radius:12px;border:1px solid var(--brd)">
         <div style="display:flex;flex-direction:column;gap:3px">
-          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Historical Volatility</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Hist. σ — Historical Volatility</span>
           <span style="font-size:11px;color:var(--text2);line-height:1.5">Standard deviation of log returns across the full life of available stock price data, annualised (×√252). Expressed as a percentage.</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:3px">
-          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Climate Volatility</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Climate σ — Climate Volatility</span>
           <span style="font-size:11px;color:var(--text2);line-height:1.5">Monthly rolling sigma regressed against NOAA Heating Degree Days, Cooling Degree Days, and Palmer-Z drought index with one-period auto-regression (OLS). Expressed as a percentage.</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:3px">
-          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Historical Option Price</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Hist. Price — Historical Option Price</span>
           <span style="font-size:11px;color:var(--text2);line-height:1.5">ATM call option price from the Black-Scholes formula using historical volatility, current stock price as strike, r = 3.5%, T = 1 year.</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:3px">
-          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Climate Option Price</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Climate Price — Climate Option Price</span>
           <span style="font-size:11px;color:var(--text2);line-height:1.5">ATM call option price from the same Black-Scholes formula but substituting climate volatility in place of historical volatility.</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:3px">
-          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Climate Premium</span>
-          <span style="font-size:11px;color:var(--text2);line-height:1.5">Difference between the climate option price and the historical option price: Climate Option Price - Historical Option Price.</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:3px">
-          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Premium %</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:.3px">Premium % — Climate Premium</span>
           <span style="font-size:11px;color:var(--text2);line-height:1.5">Percentage difference between the climate option price and the historical option price: (Climate Price − Hist. Price) / Hist. Price × 100.</span>
         </div>
       </div>
 
-      <div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Company</th><th>Stock Price</th><th>Historical Volatility</th><th>Climate Volatility</th><th>Historical Option Price</th><th>Climate Option Price</th><th>Climate Premium</th><th>Premium %</th></tr></thead><tbody id="d-tbody"></tbody></table></div>
+      <div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Company</th><th>Stock Price</th><th>Hist. σ</th><th>Climate σ</th><th>Hist. Price</th><th>Climate Price</th><th>Climate Premium</th><th>Premium %</th></tr></thead><tbody id="d-tbody"></tbody></table></div>
     </div>
   </div>
 </div>
@@ -380,7 +376,7 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
 <!-- PAGE 4: CALCULATOR -->
 <div id="page-calculator" class="page">
   <div class="pw">
-    <div class="ph"><div class="ph-eye">Module 04 — black_scholes_call() from climate_pricing.ipynb</div><h1 class="ph-title">Option Calculator</h1><p class="ph-desc">Select a company to load its real stock price and historically-derived volatility. Adjust S, K, r, and T freely — sigma is always calculated from the company's historical stock data.</p></div>
+    <div class="ph"><div class="ph-eye">Module 04 — black_scholes_call() from climate_pricing.ipynb</div><h1 class="ph-title">Option Calculator</h1><p class="ph-desc">Select a company to load its real stock price and historically-derived volatility. Adjust S, K, r, and T freely — sigma is always calculated from the CSV data.</p></div>
     <div class="gsr">
       <div>
         <div class="res-box">
@@ -399,13 +395,6 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
           <div class="gk-card"><div class="gk-sym">Θ</div><div class="gk-name">Theta/day</div><div class="gk-val" id="gt">—</div></div>
         </div>
         <div class="card gapl"><div class="slbl">Option Price vs. Stock Price S</div><div class="cw"><canvas id="calc-chart"></canvas></div></div>
-        <div style="margin-top:14px;background:var(--bg3);border:1px solid var(--brd);border-radius:12px;padding:14px 16px;font-size:11px;color:var(--text2);line-height:1.75">
-          <div style="font-weight:700;color:var(--text);font-size:12px;margin-bottom:8px;letter-spacing:.3px">Greeks — Key</div>
-          <div><strong style="color:var(--text)">Δ Delta</strong> — Change in option price per $1 move in stock price. e.g. Δ = 0.6 means a $1 stock rise → $0.60 option rise.</div>
-          <div style="margin-top:5px"><strong style="color:var(--text)">Γ Gamma</strong> — Change in Delta per $1 move in stock price. Think of Delta as velocity and Gamma as acceleration of the option price. Higher Gamma = greater variability.</div>
-          <div style="margin-top:5px"><strong style="color:var(--text)">ν Vega</strong> — Change in option price per 1% change in volatility σ. e.g. Vega = 25 means σ rising from 49% → 50% adds $0.25 to the option price.</div>
-          <div style="margin-top:5px"><strong style="color:var(--text)">Θ Theta/day</strong> — Daily time decay of the option. Option value erodes as expiry approaches. e.g. Θ = −0.05 means the option loses ~$0.05 per day.</div>
-        </div>
       </div>
 
       <!-- RIGHT PANEL: inputs -->
@@ -476,7 +465,7 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
 <div id="page-research" class="page">
   <div class="pw">
     <div class="ph"><div class="ph-eye">Module 05 — sphinx_* + Climate_coupling.ipynb</div><h1 class="ph-title">Research & Visualization</h1><p class="ph-desc">Statistical validation of climate-adjusted option pricing. Error analysis, distributions, regression surfaces.</p></div>
-    <div class="viz"><div class="viz-title">Absolute Average Percent Error by Company</div><div class="viz-cap">Mean absolute % deviation between model-predicted and realized option prices.</div><div class="cw"><canvas id="r-mape"></canvas></div></div>
+    <div class="viz"><div class="viz-title">Absolute Average Percent Error by Company</div><div class="viz-cap">Mean absolute % deviation between model-predicted and realized option prices. Red = poorly calibrated.</div><div class="cw"><canvas id="r-mape"></canvas></div></div>
 
     <!-- Distribution WITH outliers — per company slider -->
     <div class="viz">
@@ -502,7 +491,7 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
     <!-- Historical sigma vs Climate sigma time series — per company slider -->
     <div class="viz">
       <div class="viz-title">Historical σ vs Climate-Adjusted σ Over Time</div>
-      <div class="viz-cap">Monthly rolling volatility (21-day window, annualised) vs OLS-predicted climate sigma. Select a company to explore.</div>
+      <div class="viz-cap">Monthly rolling volatility (21-day window, annualised) vs OLS-predicted climate sigma. Matches climate_coupling.ipynb Cell 2. Select a company to explore.</div>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
         <div class="selwrap" style="width:220px"><select id="r-sigma-co" onchange="buildSigmaTS()"></select></div>
         <div style="font-size:12px;color:var(--text2)">
@@ -515,7 +504,7 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
 
     <div class="viz">
       <div class="viz-title">Option-Pricing % Error Per Yearly Window</div>
-      <div class="viz-cap">Signed % change = (expiry price − S₀ − option price) / S₀ per yearly window. Red dots = IQR outliers. Yellow dashed line = avg |% error|. Top 3 outliers annotated.</div>
+      <div class="viz-cap">Signed % change = (expiry price − S₀ − option price) / S₀ per yearly window. Red dots = IQR outliers. Orange dashed = avg |% error|. Top 3 annotated. Matches sphinx_option_error_norm_dis.ipynb Cell 7.</div>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
         <div class="selwrap" style="width:220px"><select id="r-wave-co" onchange="buildWaveTS()"></select></div>
         <div style="font-size:12px;color:var(--text2)">
@@ -534,7 +523,7 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
     <!-- 3D Climate Space per company — matches climate_coupling.ipynb Cell 2 scatter -->
     <div class="viz">
       <div class="viz-title">Climate Space — Cooling × Heating × Palmer-Z (Color = σ)</div>
-      <div class="viz-cap">Each point is a monthly observation. X = Cooling Degree Days, Y = Heating Degree Days, Z = Palmer-Z Index. Color = volatility σ (viridis: purple → green → yellow). Drag to rotate.</div>
+      <div class="viz-cap">Each point is a monthly observation. X = Cooling Degree Days, Y = Heating Degree Days, Z = Palmer-Z Index. Color = volatility σ (viridis: purple → green → yellow). Matches climate_coupling.ipynb Cell 2. Drag to rotate.</div>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
         <div class="selwrap" style="width:220px"><select id="r-3d-co" onchange="build3DScatter()"></select></div>
         <div style="font-size:12px;color:var(--text2)">
@@ -560,7 +549,7 @@ hr.div{border:none;border-top:.5px solid var(--border);margin:20px 0;}
 // ═══════════════════════════════════════════════════════════════
 // API LAYER
 // ═══════════════════════════════════════════════════════════════
-const API = 'https://climaquant.onrender.com';
+const API = 'http://localhost:8000';
 
 async function _post(path, body) {
   const res = await fetch(API + path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
@@ -795,8 +784,34 @@ function buildCC(){
 let dC1;
 async function buildDash(){
   try{
-    const rows=await apiCurrentPrice();
-    rows.forEach(d=>{if(d.company)DASH_DATA[d.company]=d;});
+    // Fetch all 29 companies one at a time to avoid timeout on free tier
+    const rows = [];
+    const tb = document.getElementById('d-tbody');
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text2);padding:20px">Loading companies...</td></tr>';
+    for(const co of COS){
+      try{
+        const d = await apiCurrentPrice(co);
+        if(d && !d.error){
+          rows.push(d);
+          DASH_DATA[co] = d;
+          // Update table row live as each company loads
+          const abs=d.abs_diff||0, pct=d.pct_diff||0;
+          const existing = document.getElementById('dash-row-'+co);
+          const rowHtml = `<tr id="dash-row-${co}">
+            <td class="td-p">${d.ticker||TK[co]}</td>
+            <td>$${(d.stock_price||0).toFixed(2)}</td>
+            <td>${((d.sigma_hist||0)*100).toFixed(2)}%</td>
+            <td style="color:var(--amber)">${((d.sigma_climate||0)*100).toFixed(2)}%</td>
+            <td>$${(d.vanilla_price||0).toFixed(2)}</td>
+            <td style="color:var(--accent)">$${(d.climate_price||0).toFixed(2)}</td>
+            <td style="color:${abs>=0?'var(--green)':'var(--red)'}">${abs>=0?'+':'-'}$${Math.abs(abs).toFixed(2)}</td>
+            <td><span class="badge ${pct>=0?'bg':'br'}">${pct>=0?'+':''}${pct.toFixed(1)}%</span></td>
+          </tr>`;
+          if(existing) existing.outerHTML = rowHtml;
+          else { if(rows.length===1) tb.innerHTML=''; tb.innerHTML += rowHtml; }
+        }
+      }catch(e){ console.warn('Failed to load '+co, e); }
+    }
     const valid=rows.filter(d=>d.pct_diff!=null);
     if(valid.length){
       const avgUplift=valid.reduce((s,d)=>s+d.pct_diff,0)/valid.length;
@@ -807,22 +822,6 @@ async function buildDash(){
       document.getElementById('d-max-uplift').textContent=maxRow.ticker||TK[maxRow.company];
       document.getElementById('d-max-sub').textContent='+'+maxRow.pct_diff.toFixed(1)+'% climate premium';
     }
-    const tb=document.getElementById('d-tbody');
-    tb.innerHTML='';
-    rows.forEach(d=>{
-      if(d.error)return;
-      const abs=d.abs_diff||0,pct=d.pct_diff||0;
-      tb.innerHTML+=`<tr>
-        <td class="td-p">${d.ticker||TK[d.company]}</td>
-        <td>$${(d.stock_price||0).toFixed(2)}</td>
-        <td>${((d.sigma_hist||0)*100).toFixed(2)}%</td>
-        <td style="color:var(--amber)">${((d.sigma_climate||0)*100).toFixed(2)}%</td>
-        <td>$${(d.vanilla_price||0).toFixed(2)}</td>
-        <td style="color:var(--accent)">$${(d.climate_price||0).toFixed(2)}</td>
-        <td style="color:${abs>=0?'var(--green)':'var(--red)'}">${abs>=0?'+':'-'}$${Math.abs(abs).toFixed(2)}</td>
-        <td><span class="badge ${pct>=0?'bg':'br'}">${pct>=0?'+':''}${pct.toFixed(1)}%</span></td>
-      </tr>`;
-    });
     if(dC1)dC1.destroy();
     const ctx=document.getElementById('d-chart').getContext('2d');
     const deltas=rows.filter(d=>!d.error).map(d=>+(d.pct_diff||0).toFixed(2));
