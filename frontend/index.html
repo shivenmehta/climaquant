@@ -784,34 +784,14 @@ function buildCC(){
 let dC1;
 async function buildDash(){
   try{
-    // Fetch all 29 companies one at a time to avoid timeout on free tier
-    const rows = [];
+    // Fetch all 29 companies in parallel
     const tb = document.getElementById('d-tbody');
-    tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text2);padding:20px">Loading companies...</td></tr>';
-    for(const co of COS){
-      try{
-        const d = await apiCurrentPrice(co);
-        if(d && !d.error){
-          rows.push(d);
-          DASH_DATA[co] = d;
-          // Update table row live as each company loads
-          const abs=d.abs_diff||0, pct=d.pct_diff||0;
-          const existing = document.getElementById('dash-row-'+co);
-          const rowHtml = `<tr id="dash-row-${co}">
-            <td class="td-p">${d.ticker||TK[co]}</td>
-            <td>$${(d.stock_price||0).toFixed(2)}</td>
-            <td>${((d.sigma_hist||0)*100).toFixed(2)}%</td>
-            <td style="color:var(--amber)">${((d.sigma_climate||0)*100).toFixed(2)}%</td>
-            <td>$${(d.vanilla_price||0).toFixed(2)}</td>
-            <td style="color:var(--accent)">$${(d.climate_price||0).toFixed(2)}</td>
-            <td style="color:${abs>=0?'var(--green)':'var(--red)'}">${abs>=0?'+':'-'}$${Math.abs(abs).toFixed(2)}</td>
-            <td><span class="badge ${pct>=0?'bg':'br'}">${pct>=0?'+':''}${pct.toFixed(1)}%</span></td>
-          </tr>`;
-          if(existing) existing.outerHTML = rowHtml;
-          else { if(rows.length===1) tb.innerHTML=''; tb.innerHTML += rowHtml; }
-        }
-      }catch(e){ console.warn('Failed to load '+co, e); }
-    }
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text2);padding:20px">Loading...</td></tr>';
+    const results = await Promise.all(
+      COS.map(co => apiCurrentPrice(co).catch(e => ({ company: co, error: e.message })))
+    );
+    const rows = results.filter(d => d && !d.error);
+    rows.forEach(d => { if(d.company) DASH_DATA[d.company] = d; });
     const valid=rows.filter(d=>d.pct_diff!=null);
     if(valid.length){
       const avgUplift=valid.reduce((s,d)=>s+d.pct_diff,0)/valid.length;
